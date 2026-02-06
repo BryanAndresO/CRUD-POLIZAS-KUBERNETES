@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clients-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clients-service
+  template:
+    metadata:
+      labels:
+        app: clients-service
+    spec:
+      containers:
+      - name: clients-service
+        image: clients-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://postgres-service:5432/db_clients
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clients-service
+spec:
+  selector:
+    app: clients-service
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081

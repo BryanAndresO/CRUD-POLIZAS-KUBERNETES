@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plans-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plans-service
+  template:
+    metadata:
+      labels:
+        app: plans-service
+    spec:
+      containers:
+      - name: plans-service
+        image: plans-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8082
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://postgres-service:5432/db_plans
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plans-service
+spec:
+  selector:
+    app: plans-service
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082

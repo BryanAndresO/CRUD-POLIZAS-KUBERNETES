@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polizas-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: polizas-service
+  template:
+    metadata:
+      labels:
+        app: polizas-service
+    spec:
+      containers:
+      - name: polizas-service
+        image: polizas-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://mysql-service:3306/db_polizas
+        - name: CLIENTS_SERVICE_URL
+          value: http://clients-service:8081
+        - name: PLANS_SERVICE_URL
+          value: http://plans-service:8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polizas-service
+spec:
+  selector:
+    app: polizas-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
