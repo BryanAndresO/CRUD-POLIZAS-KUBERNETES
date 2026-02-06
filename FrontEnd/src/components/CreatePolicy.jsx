@@ -37,6 +37,16 @@ const CreatePolicy = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+
+        // Formatear fechas para asegurar comparación correcta
+        const start = new Date(poliza.fechaInicio);
+        const end = new Date(poliza.fechaFin);
+
+        if (end <= start) {
+            alert("La fecha de fin debe ser posterior a la fecha de inicio");
+            return;
+        }
+
         try {
             await policiesService.post('/polizas', poliza);
             navigate('/polizas');

@@ -35,10 +35,12 @@ public class PolizaService {
             throw new RuntimeException("Cliente no encontrado");
         }
 
-        // Validate Plan
-        PlanDto plan = planClient.getPlanById(poliza.getPlanId());
-        if (plan == null) {
-            throw new RuntimeException("Plan no encontrado");
+        // Validate Dates
+        if (poliza.getFechaFin() == null || poliza.getFechaInicio() == null) {
+            throw new RuntimeException("Las fechas son obligatorias");
+        }
+        if (poliza.getFechaFin().isBefore(poliza.getFechaInicio()) || poliza.getFechaFin().isEqual(poliza.getFechaInicio())) {
+            throw new RuntimeException("La fecha de fin debe ser posterior a la fecha de inicio");
         }
 
         // Generate numeroPoliza if not present
